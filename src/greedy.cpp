@@ -155,25 +155,25 @@ char *check_closefile(int file_size)
     switch (file_size)
     {
     case 5:
-        closefile = "output_0.csv";
+        closefile = "solution_yours_0.csv";
         break;
     case 8:
-        closefile = "output_1.csv";
+        closefile = "solution_yours_1.csv";
         break;
     case 16:
-        closefile = "output_2.csv";
+        closefile = "solution_yours_2.csv";
         break;
     case 64:
-        closefile = "output_3.csv";
+        closefile = "solution_yours_3.csv";
         break;
     case 128:
-        closefile = "output_4.csv";
+        closefile = "solution_yours_4.csv";
         break;
     case 512:
-        closefile = "output_5.csv";
+        closefile = "solution_yours_5.csv";
         break;
     case 2048:
-        closefile = "output_6.csv";
+        closefile = "solution_yours_6.csv";
         break;
     default:
         printf("error\n");
@@ -194,17 +194,8 @@ bool judgeIntersected(double ax, double ay, double bx, double by, double cx, dou
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-int main(int argc, char * argv[])
-{
-    string fname = argv[1];
-
-    if (argc != 2)
-    {
-      printf("Usage : ./greedy <FileName>\n");
-      exit(EXIT_FAILURE);
-    }
-
-    //ファイル名のチェック
+void tsp(string fname){
+   //ファイル名のチェック
     int file_size = checkfile(fname);
     printf("file_size : %d\n", file_size);
 
@@ -236,7 +227,36 @@ int main(int argc, char * argv[])
         cnt++;
     }
 
+    vector<int> moved(file_size);
+    rep(i, file_size){
+      moved[i] = tour[i];
+    }
+    Data A, B, C, D; int tmp;
+
+    for(int i = 0; i < file_size - 1; i++){
+      A = d[moved[i]];
+      B = d[moved[i+1]];
+      for(int j = i + 2; j < file_size - 1; j++){ 
+        C = d[moved[j]];
+        D = d[moved[j+1]];
+        if(judgeIntersected(A.x, A.y, B.x, B.y, C.x, C.y, D.x, D.y)){
+          if(Distance(A, C) + Distance(B, D) < Distance(A, D) + Distance(B, C)){
+            swap(moved[i+1], moved[j]);
+          } else {
+            swap(moved[i+1], moved[j+1]);
+          }
+        }
+      }
+    }
     
-    writefile(file_size, tour);
-    return 0;
+    writefile(file_size, moved);
+}
+
+int main()
+{
+  rep(i, 7){
+    string filename = "input_" + to_string(i) + ".csv";
+    tsp(filename);
+  }
+  return 0;
 }

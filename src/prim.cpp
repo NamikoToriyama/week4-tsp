@@ -13,8 +13,7 @@
 using namespace std;
 #define print(x) cout<<(x)<<endl
 #define rep(i, n) for(int i = 0; i < (int)n; i++)
-#define ll long long
-#define ld long double
+const double INF = DBL_MAX;
 
 //各点の構造体
 struct Data
@@ -31,6 +30,7 @@ vector<vector<double> > read_file(string, int);
 vector<Data> d;
 vector<vector<double> > dist;
 int max_size=2048;
+int n;
 
 //距離を計算する関数
 double Distance(struct Data n1, struct Data n2)
@@ -97,30 +97,29 @@ int writefile(int file_size, vector<int> tour)
     return 0;
 }
 
-vector<int> greedy(int file_size){
-  vector<int> tour(file_size, 0);    
-  int current_city = 0;                //初期の場所変えると変化する
-  int nextcity;
-  vector<bool> unvisited_cities(file_size, true); //訪れていない場所のセット
-  unvisited_cities[current_city] = false;
-  tour[0] = current_city; //初期値をツアーに入れる
-  int cnt = 1;
-  //距離の比較を行う
-    while(cnt < file_size){
-        double tmplen = DBL_MAX; //とりあえずの値なので大きめの値ならなんでも良い
-        for (int j = 0; j < file_size; j++)
-        {
-            if (dist[current_city][j] < tmplen && dist[current_city][j] > 0 && unvisited_cities[j])
-            {
-                tmplen = dist[current_city][j];
-                nextcity = j;
-            }
-        }
-        tour[cnt-1] = nextcity; //次に移動した場所を配列に代入
-        current_city = nextcity;
-        unvisited_cities[nextcity] = false;   
-        cnt++;
+
+vector<int> prim(){
+  vector<double> mincost(n, INF);
+  vector<bool> used(n, false);
+  vector<int> tour;
+
+  mincost[0] = 0;
+
+  while(true){
+    int v = -1;
+    rep(u, n){
+      if(!used[u]&&(v == -1 || mincost[u] < mincost[v])) v = u;
     }
+    if(v == -1) break; // 全部usedになった
+    used[v] = true;
+    tour.push_back(v);
+
+    rep(u, n){
+      mincost[u] = min(mincost[u], dist[v][u]);
+    }
+  }
+  return tour;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,8 +130,9 @@ void tsp(string fname){
     auto t = read_file(fname);
     dist = t.first;
     int file_size = t.second;
+    n = file_size;
+    vector<int> tour = prim();
 
-    vector<int> tour = greedy(file_size);
     writefile(file_size, tour);
 }
 

@@ -97,6 +97,16 @@ int writefile(int file_size, vector<int> tour)
     return 0;
 }
 
+
+bool judgeIntersected(double ax, double ay, double bx, double by, double cx, double cy, double dx, double dy){
+  double ta = (cx - dx) * (ay - cy) + (cy - dy) * (cx - ax);
+  double tb = (cx - dx) * (by - cy) + (cy - dy) * (cx - bx);
+  double tc = (ax - bx) * (cy - ay) + (ay - by) * (ax - cx);
+  double td = (ax - bx) * (dy - ay) + (ay - by) * (ax - dx);
+
+  return tc * td < 0 && ta * tb < 0;
+}
+
 vector<int> greedy(int file_size){
   vector<int> tour(file_size, 0);    
   int current_city = 0;                //初期の場所変えると変化する
@@ -118,7 +128,7 @@ vector<int> greedy(int file_size){
         }
         tour[cnt-1] = nextcity; //次に移動した場所を配列に代入
         current_city = nextcity;
-        unvisited_cities[nextcity] = false;   
+        unvisited_cities[nextcity] = false;
         cnt++;
     }
 }

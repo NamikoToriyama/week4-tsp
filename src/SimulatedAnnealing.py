@@ -28,7 +28,7 @@ class TravellingSalesmanProblem(Annealer):
         return e
 
 import pandas as pd
-filename = '../input_6.csv'
+filename = '../input_4.csv'
 xyData = pd.read_csv(filename)
 N = len(xyData)
 
@@ -50,7 +50,7 @@ import random
 random.shuffle(index)
 tsp = TravellingSalesmanProblem(index, distance_matrix)
 
-tsp.set_schedule(tsp.auto(minutes=0.2))
+tsp.set_schedule(tsp.auto(minutes=1.5))
 tsp.copy_strategy = "slice"
 state, e = tsp.anneal()
 
@@ -59,5 +59,6 @@ outfile = '../solution_simulated_namiko_' + filename[-5:]
 import csv
 with open(outfile, 'w') as f:
     writer = csv.writer(f)
+    writer.writerow("index")
     for s in state:
       writer.writerow(s)

@@ -1,6 +1,21 @@
-Build@Mercari 2020 Week4 - Travelling Salesman PRoblem Challenges.
+# Build@Mercari 2020 Week4 - Travelling Salesman PRoblem Challenges.
 
 This is forked from [https://github.com/hayatoito/google-step-tsp-2016](https://github.com/hayatoito/google-step-tsp-2016).
+
+## 記録
+| N (= the number of cities) | 焼きなまし法  | Greedy(C++)|
+| -------------------------: | ----------- | ---------- |
+|                          5 | 3291.62     | 3418.1     |
+|                          8 | 3778.72     | 3832.29    |
+|                         16 | 4494.42     | 5449.44    |
+|                         64 | 10208.12    | 10519.16   |
+|                        128 | 18016.19    | 12684.06   |
+|                        512 | 67670.17    | 25331.84   |
+|                       2048 | 266817.35   | 49892.05   |
+
+### 焼きなまし法
+pythonのライブラリに突っ込んでみた。[こちら](https://qiita.com/maskot1977/items/38e07042a9c5f3848877)を参考。
+Nが2048の時は1,2時間くらい実行時間がかかった。通ったものの中での確率をみていくため、時間をかければ最適解が得られるのかもしれないが、あまり現実的ではないと思った。N=64くらいから明らかに変なルートを出すようになり始めた。
 
 1. 問題
 [巡回セールスマン問題](https://ja.wikipedia.org/wiki/%E5%B7%A1%E5%9B%9E%E3%82%BB%E3%83%BC%E3%83%AB%E3%82%B9%E3%83%9E%E3%83%B3%E5%95%8F%E9%A1%8C) を解くアルゴリズムを考えてください。

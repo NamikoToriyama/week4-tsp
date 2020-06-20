@@ -233,20 +233,28 @@ void tsp(string fname){
     }
     Data A, B, C, D; int tmp;
 
-    for(int i = 0; i < file_size - 1; i++){
-      A = d[moved[i]];
-      B = d[moved[i+1]];
-      for(int j = i + 2; j < file_size - 1; j++){ 
-        C = d[moved[j]];
-        D = d[moved[j+1]];
-        if(judgeIntersected(A.x, A.y, B.x, B.y, C.x, C.y, D.x, D.y)){
-          if(Distance(A, C) + Distance(B, D) < Distance(A, D) + Distance(B, C)){
-            swap(moved[i+1], moved[j]);
-          } else {
-            swap(moved[i+1], moved[j+1]);
+    // MAX100回くらい回す
+    cnt = 0; bool flag = false;
+    while(cnt < 100) {
+      flag = true;
+      for(int i = 0; i < file_size - 1; i++){
+        A = d[moved[i]];
+        B = d[moved[i+1]];
+        for(int j = i + 2; j < file_size - 1; j++){ 
+          C = d[moved[j]];
+          D = d[moved[j+1]];
+          if(judgeIntersected(A.x, A.y, B.x, B.y, C.x, C.y, D.x, D.y)){
+            flag = false;
+            if(Distance(A, C) + Distance(B, D) < Distance(A, D) + Distance(B, C)){
+              swap(moved[i+1], moved[j]);
+            } else {
+              swap(moved[i+1], moved[j+1]);
+            }
           }
         }
       }
+      if(flag) break;
+      cnt++;
     }
     
     writefile(file_size, moved);

@@ -119,8 +119,44 @@ vector<int> prim(){
     }
   }
   return tour;
-
 }
+
+
+vector<int> execute_2opt(vector<int> tour){
+  // O(n^2*100)
+  vector<vector<double> > distance = dist;
+  bool flag = true;
+  rep(k, 1000){
+    flag = true;
+    // cout << k << endl;
+    for(int A=0; A < n-2; A++){
+      // cout << A << endl;
+      for(int C=A+2; C < n; C++){
+        //2opt法の計算, 関数に分けたかったが実行時間の関係で断念
+        int B = (A+1)%n;
+        int D = (C+1)%n;
+        double d1 = distance[tour[A]][tour[C]];
+        double d2 = distance[tour[B]][tour[D]];
+        double d3 = distance[tour[A]][tour[B]];
+        double d4 = distance[tour[C]][tour[D]];
+        //頂点を交換した際のコストの変化量の計算
+        if(d1 + d2 < d3 + d4){
+            reverse(tour.begin() + B, tour.begin() + C);
+            flag = false;
+            //頂点番号の入れ替え
+            int tmp=tour[B];
+            tour[B]=tour[C];
+            tour[C]=tmp;
+        }
+      }   
+    }
+    if(flag) {
+        break;
+    }
+  }
+  return tour;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -132,6 +168,7 @@ void tsp(string fname){
     int file_size = t.second;
     n = file_size;
     vector<int> tour = prim();
+    tour = execute_2opt(tour);
 
     writefile(file_size, tour);
 }

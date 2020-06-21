@@ -1,6 +1,6 @@
-filename=prim.cpp
+filename=greedyPlus.cpp
 run: $(filename)
-	g++ -o a.out $(filename) && \
+	g++ -std=c++11 -o a.out $(filename) && \
 	./a.out ../input_0.csv > ../solution_yours_0.csv && \
 	./a.out ../input_1.csv > ../solution_yours_1.csv && \
 	./a.out ../input_2.csv > ../solution_yours_2.csv && \

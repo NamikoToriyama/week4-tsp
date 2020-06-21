@@ -15,6 +15,8 @@ using namespace std;
 #define rep(i, n) for(int i = 0; i < (int)n; i++)
 #define ll long long
 #define ld long double
+const ld INF = LDBL_MAX;
+
 
 //各点の構造体
 struct Data

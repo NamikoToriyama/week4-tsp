@@ -344,7 +344,7 @@ void tsp(string fname){
     // tour = execute_2opt(tour);
     cout << get_total_distanace(tour) << endl;
 
-    // writefile(tour);
+    writefile(tour);
 }
 
 int main(int argc, char *argv[])

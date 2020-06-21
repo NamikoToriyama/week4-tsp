@@ -154,6 +154,15 @@ vector<int> insertData(int a, vector<int> tour){
             } 
             break;
         }
+        // debug: totalの距離
+        double t_t=0., m_t=0.0;
+        rep(i, n-1){
+            t_t += dist[tour[i]][tour[i+1]];
+            m_t += dist[moved[i]][moved[i+1]];
+        }
+        t_t += dist[tour[n-1]][tour[0]];
+        m_t += dist[moved[n-1]][moved[0]];
+        if(t_t < m_t)
     }
 
     // 続きから貪欲
@@ -174,23 +183,21 @@ vector<int> insertData(int a, vector<int> tour){
         start++;
     }
 
-    // debug: totalの距離
-    double t_t=0., m_t=0.0;
-    rep(i, n-1){
-        t_t += dist[tour[i]][tour[i+1]];
-        m_t += dist[moved[i]][moved[i+1]];
-    }
-    t_t += dist[tour[n-1]][tour[0]];
-    m_t += dist[moved[n-1]][moved[0]];
-    if(t_t < m_t) return tour;
-    return moved;
+    // rep(i, n){
+    //     cout << moved[i] << " ";
+    // }
+    // cout << endl;
     return moved;
 
 }
 
 vector<int> eliminateLongDist(vector<int> tour){
+    
+    rep(i, n-1){
+        t_t += dist[tour[i]][tour[i+1]];
+    }
 
-    for(int i = n-1; i >= n-n/2; i--){
+    for(int i = n-1; i >= n-n/5; i--){
         // 各点同士の距離を求める
         vector<std::tuple<double, int, int> > lenData;
         rep(i, n-1){
@@ -205,6 +212,14 @@ vector<int> eliminateLongDist(vector<int> tour){
         tour = insertData(a, tour);
         tour = insertData(b, tour);
     }
+
+    // debug: totalの距離
+    // rep(i, n-1){
+    //     m_t += dist[tour[i]][tour[i+1]];
+    // }
+
+    // cout << "tour:" << t_t << endl;
+    // cout << "moved" << m_t << endl;
     
     return tour;
 }

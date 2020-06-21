@@ -9,12 +9,15 @@
 #include <float.h>
 #include <fstream>
 #include <sstream>
+#include <tuple>
+#include <list>
 
 using namespace std;
 #define print(x) cout<<(x)<<endl
 #define rep(i, n) for(int i = 0; i < (int)n; i++)
-#define ll long long
 #define ld long double
+const ld INF = LDBL_MAX;
+
 
 //各点の構造体
 struct Data
@@ -23,13 +26,9 @@ struct Data
     double y; //y座標
 };
 
-int checkfile(string);
-int writefile(int, vector<int>);
-char *check_closefile(int);
-vector<vector<double> > read_file(string, int);
-
-vector<Data> d;
+vector<Data> xy_data;
 vector<vector<double> > dist;
+int n;
 int max_size=2048;
 
 //距離を計算する関数
@@ -50,15 +49,15 @@ vector<string> split(string& input, char delimiter)
     return result;
 }
 
-vector<vector<double> > calc_distance(int file_size){
+vector<vector<double> > calc_distance(int n){
   //距離を配列に入れる
-  vector<vector<double> > distance(file_size, vector<double> (file_size));
-  for (int i = 0; i < file_size; i++)
+  vector<vector<double> > distance(n, vector<double> (n));
+  for (int i = 0; i < n; i++)
   {
-      for (int j = i; j < file_size; j++)
+      for (int j = i; j < n; j++)
       {
           
-          distance[i][j] = distance[j][i] = Distance(d[i], d[j]);
+          distance[i][j] = distance[j][i] = Distance(xy_data[i], xy_data[j]);
       }
   }
   return distance;
@@ -67,7 +66,7 @@ vector<vector<double> > calc_distance(int file_size){
 pair<vector<vector<double> >, int> read_file(string fname){
    //ファイルを開く
     ifstream ifs(fname);
-    d.resize(max_size);
+    xy_data.resize(max_size);
     int filesize = 0;
 
     //各行の読み込み
@@ -77,8 +76,8 @@ pair<vector<vector<double> >, int> read_file(string fname){
         vector<string> strvec = split(line, ',');
         if(strvec[0] == "x") continue;
         if (strvec.size() == 2){
-          d[i].x = stod(strvec[0]); //構造体に代入
-          d[i].y = stod(strvec[1]);
+          xy_data[i].x = stod(strvec[0]); //構造体に代入
+          xy_data[i].y = stod(strvec[1]);
           i++;
           filesize++;
         }
@@ -87,38 +86,28 @@ pair<vector<vector<double> >, int> read_file(string fname){
 }
 
 //ファイルの書き込みをする関数
-int writefile(int file_size, vector<int> tour)
+int writefile(vector<int> tour)
 {
     cout << "index\n";
-    for (int i = 0; i < file_size; i++)
+    for (int i = 0; i < n; i++)
     {
         cout << tour[i] << "\n";
     }
     return 0;
 }
 
-
-bool judgeIntersected(double ax, double ay, double bx, double by, double cx, double cy, double dx, double dy){
-  double ta = (cx - dx) * (ay - cy) + (cy - dy) * (cx - ax);
-  double tb = (cx - dx) * (by - cy) + (cy - dy) * (cx - bx);
-  double tc = (ax - bx) * (cy - ay) + (ay - by) * (ax - cx);
-  double td = (ax - bx) * (dy - ay) + (ay - by) * (ax - dx);
-
-  return tc * td < 0 && ta * tb < 0;
-}
-
-vector<int> greedy(int file_size){
-  vector<int> tour(file_size, 0);    
+vector<int> greedy(){
+  vector<int> tour(n, 0);    
   int current_city = 0;                //初期の場所変えると変化する
   int nextcity;
-  vector<bool> unvisited_cities(file_size, true); //訪れていない場所のセット
+  vector<bool> unvisited_cities(n, true); //訪れていない場所のセット
   unvisited_cities[current_city] = false;
   tour[0] = current_city; //初期値をツアーに入れる
   int cnt = 1;
   //距離の比較を行う
-    while(cnt < file_size){
+    while(cnt < n){
         double tmplen = DBL_MAX; //とりあえずの値なので大きめの値ならなんでも良い
-        for (int j = 0; j < file_size; j++)
+        for (int j = 0; j < n; j++)
         {
             if (dist[current_city][j] < tmplen && dist[current_city][j] > 0 && unvisited_cities[j])
             {
@@ -128,10 +117,51 @@ vector<int> greedy(int file_size){
         }
         tour[cnt-1] = nextcity; //次に移動した場所を配列に代入
         current_city = nextcity;
-        unvisited_cities[nextcity] = false;
+        unvisited_cities[nextcity] = false;   
         cnt++;
     }
+    return tour;
 }
+
+
+vector<int> execute_2opt(vector<int> tour){
+  // O(n^2*100)
+  // cout << n << endl;
+  vector<vector<double> > distance = dist;
+  rep(k, 100){
+    // cout << k << endl;
+    for(int A=0; A < n-2; A++){
+      // cout << A << endl;
+      for(int C=A+2; C < n; C++){
+        //2opt法の計算, 関数に分けたかったが実行時間の関係で断念
+        int B = (A+1)%n;
+        int D = (C+1)%n;
+        double d1 = distance[tour[A]][tour[C]];
+        double d2 = distance[tour[B]][tour[D]];
+        double d3 = distance[tour[A]][tour[B]];
+        double d4 = distance[tour[C]][tour[D]];
+        //頂点を交換した際のコストの変化量の計算
+        if(d1 + d2 < d3 + d4){
+          //頂点番号の入れ替え
+          int tmp=tour[B];
+          tour[B]=tour[C];
+          tour[C]=tmp;
+        }
+      }   
+    }
+  }
+  return tour;
+}
+
+void get_total_distanace(vector<int> tour){
+  double t_t=0.;
+  rep(i, n-1){
+      t_t += dist[tour[i]][tour[i+1]];
+  }
+  t_t += dist[tour[n-1]][tour[0]];
+  cout << t_t << endl;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -140,10 +170,13 @@ void tsp(string fname){
     // 距離をゲットする
     auto t = read_file(fname);
     dist = t.first;
-    int file_size = t.second;
+    n = t.second;
 
-    vector<int> tour = greedy(file_size);
-    writefile(file_size, tour);
+    vector<int> tour = greedy(); 
+    // get_total_distanace(tour);
+    tour = execute_2opt(tour);
+    // get_total_distanace(tour);
+    writefile(tour);
 }
 
 int main(int argc, char *argv[])

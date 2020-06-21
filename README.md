@@ -3,7 +3,7 @@
 This is forked from [https://github.com/hayatoito/google-step-tsp-2016](https://github.com/hayatoito/google-step-tsp-2016).
 
 ## 記録
-| N (= the number of cities) | 焼きなまし法  | Greedy(C++)|プリム法    | GreedyPlus | Greedy+2opt| GreedyPlus+2opt | ConvexHull| ConvexHull+2opt |
+| N  | 焼きなまし法  | Greedy(C++)|プリム法    | GreedyPlus | Greedy+2opt| GreedyPlus+2opt | ConvexHull| ConvexHull+2opt |
 | -------------------------: | ----------- | ---------- |-----------|------------|------------|-----------------|------------|---------------|
 |                          5 | 3291.62     | 3418.1     | 3418.1    |3291.62     |3418.1      |3291.62          |3291.62     |3291.62     |
 |                          8 | 3778.72     | 3832.29    | 3832.29   |3832.29     |3832.29     |3832.29          |3778.72     |3778.72     |
